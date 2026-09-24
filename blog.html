@@ -1069,6 +1069,7 @@ class SelfAttention(nn.Module):
         </article>`).join('');
     }
     function openModal(i) {
+      if (!Number.isInteger(i) || i < 0 || i >= filtered.length) return;
       const a = filtered[i];
       if (!a) return;
       openIdx = i;
@@ -1081,18 +1082,20 @@ class SelfAttention(nn.Module):
       document.getElementById('btnNext').disabled = i === filtered.length - 1;
       document.getElementById('overlay').classList.add('open');
       document.body.style.overflow = 'hidden';
+      document.getElementById('modalBody').scrollTop = 0;
     }
     function closeModal() {
       document.getElementById('overlay').classList.remove('open');
       document.body.style.overflow = '';
+      openIdx = -1;
     }
+    // Navigate by position in the current filtered list, not article IDs.
+    // Imported articles may share an ID, so ID lookups can jump or loop.
     document.getElementById('btnPrev').addEventListener('click', () => {
-      const current = filtered.findIndex(a => a.id === filtered[openIdx]?.id);
-      if (current > 0) openModal(current - 1);
+      if (openIdx > 0) openModal(openIdx - 1);
     });
     document.getElementById('btnNext').addEventListener('click', () => {
-      const current = filtered.findIndex(a => a.id === filtered[openIdx]?.id);
-      if (current >= 0 && current < filtered.length - 1) openModal(current + 1);
+      if (openIdx >= 0 && openIdx < filtered.length - 1) openModal(openIdx + 1);
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
     renderGrid();
