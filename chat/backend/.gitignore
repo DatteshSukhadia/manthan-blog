@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.env
+.env.local
+.venv-voice/
+voice/models/
+voice/cache/
+**/__pycache__/
+*.tsbuildinfo
