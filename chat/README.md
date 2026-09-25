@@ -22,13 +22,27 @@ No public application deployment, domain attachment, or DNS change has been made
 Build success does not verify runtime authentication, database persistence,
 password-reset delivery, or narration.
 
-The target address is `chat.manthan.blog`, a subdomain, not an HTML filename.
+The target address is `chat.manthan.education`, a subdomain, not an HTML filename.
 Do not change the root directory of the existing blog's Vercel project.
+
+## No-cost requirement
+
+Do not provision paid hosting, paid databases, paid narration, paid email, or paid
+AI services. The repository upload does not create any of these services.
+Free-tier limits and billing settings must be verified before activating any
+provider. If a required feature has no verified no-cost deployment, leave it
+unconfigured and explain the limitation rather than silently enabling billing.
+
+The original local application is preserved. A redirect requires an already
+running, publicly accessible service; it cannot execute these source files,
+provide database persistence, or start the Python narration worker.
+Do not use an expiring or private development-preview URL as the production
+redirect destination.
 
 ## Recommended architecture
 
 Use a separate Vercel project for the frontend, connected to this repository
-with root directory `chat/frontend`. Attach `chat.manthan.blog` to that project.
+with root directory `chat/frontend`. Attach `chat.manthan.education` to that project.
 Keep the existing blog project and its domain settings untouched.
 
 Run `backend/` and the Python voice worker on a persistent Linux server, with
@@ -56,7 +70,7 @@ Backend:
 
 - `DATABASE_URL`: an absolute SQLite URL on durable storage, such as
   `file:/srv/manthan-data/manthan.db`.
-- `APP_URL`: `https://chat.manthan.blog`.
+- `APP_URL`: `https://chat.manthan.education`.
 - `AUTH_MODE`: `cookie`.
 - `DEMO_ENABLED`: `false`.
 - `INSTITUTION_PREVIEW`: `false`.
@@ -70,7 +84,7 @@ Do not enable the preview visitor-header authentication mode in production.
 
 ## Before launch
 
-- Choose and authorize the persistent backend host, including any costs.
+- Choose a verified no-cost backend option. Do not activate paid resources.
 - Review rate limiting, signup abuse protection, privacy/deletion practices,
   and backup/restore procedures. Existing in-memory rate limits are not shared
   across processes or durable across restarts.
@@ -79,7 +93,7 @@ Do not enable the preview visitor-header authentication mode in production.
 - Start and verify the voice service, or clearly communicate its unavailability.
 - Verify signup, login, logout, password reset, lesson creation, uploads, quizzes,
   and saved progress through the frontend origin.
-- In the separate frontend project's domain settings, add `chat.manthan.blog`
+- In the separate frontend project's domain settings, add `chat.manthan.education`
   and use the exact DNS record Vercel supplies. Do not alter apex or `www` records.
 - Verify HTTPS and repeat the runtime checks on the final subdomain.
 
