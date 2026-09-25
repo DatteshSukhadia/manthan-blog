@@ -1,0 +1,15 @@
+app/
+components/
+lib/
+public/
+prisma/
+tsconfig.json
+next-env.d.ts
+postcss.config.js
+tailwind.config.ts
+node_modules/
+.next/
+.vercel/
+.env*
+!.env.example
+*.db*

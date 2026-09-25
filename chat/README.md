@@ -17,10 +17,12 @@ database binary committed to this repository.
 
 ## Deployment status
 
-Frontend and backend production builds passed in the preparation environment.
-No public application deployment, domain attachment, or DNS change has been made.
-Build success does not verify runtime authentication, database persistence,
-password-reset delivery, or narration.
+The Vercel-compatible deployment lives in `vercel/`. It combines the frontend
+and API during the build and uses a Turso database instead of ephemeral local
+SQLite. See [the deployment guide](vercel/README.md) for configuration and
+explicit no-cost feature limitations. The uploaded source folders remain intact.
+Production builds pass locally; deployment and final-domain runtime verification
+are separate launch steps.
 
 The target address is `chat.manthan.education`, a subdomain, not an HTML filename.
 Do not change the root directory of the existing blog's Vercel project.
@@ -39,7 +41,16 @@ provide database persistence, or start the Python narration worker.
 Do not use an expiring or private development-preview URL as the production
 redirect destination.
 
-## Recommended architecture
+## Vercel deployment
+
+Create a separate project with root directory `chat/vercel`, including files
+outside the root directory. Use the free Turso Starter database integration.
+The build applies versioned SQL migrations, and authentication uses secure
+same-origin cookies. Rate limits are stored in the shared database.
+No paid AI, email, or narration service is configured. Device narration replaces
+the separate neural voice worker in this deployment.
+
+## Original persistent-server architecture
 
 Use a separate Vercel project for the frontend, connected to this repository
 with root directory `chat/frontend`. Attach `chat.manthan.education` to that project.
