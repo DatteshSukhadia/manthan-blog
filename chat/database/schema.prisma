@@ -1,0 +1,115 @@
+generator client {
+  provider = "node ../backend/node_modules/@prisma/client/generator-build/index.js"
+  output   = "../backend/node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  learner
+  instructor
+  institution_admin
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  name         String
+  passwordHash String
+  role         Role         @default(learner)
+  level        String       @default("University")
+  interests    String       @default("[]")
+  bio          String       @default("")
+  onboarded    Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  path         LearningPath?
+  lessons      Lesson[]
+  sessions     Session[]
+  resetTokens  ResetToken[]
+}
+
+model Session {
+  id          String   @id @default(cuid())
+  tokenHash   String   @unique
+  visitorHash String?
+  expiresAt   DateTime
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DevEmail {
+  id        String   @id @default(cuid())
+  recipient String
+  subject   String
+  body      String
+  createdAt DateTime @default(now())
+}
+
+model LearningPath {
+  id          String     @id @default(cuid())
+  userId      String     @unique
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal        String
+  firstTopics String     @default("[]")
+  status      String     @default("active")
+  items       PathItem[]
+}
+
+model Lesson {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  level        String
+  pillar       String
+  prompt       String
+  content      String
+  generator    String       @default("local")
+  watched      Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  attachments  Attachment[]
+  attempts     QuizAttempt[]
+  pathItem     PathItem?
+}
+
+model Attachment {
+  id           String   @id @default(cuid())
+  lessonId     String
+  lesson       Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  filename     String
+  kind         String
+  size         Int
+  extractedText String
+}
+
+model PathItem {
+  id          String       @id @default(cuid())
+  pathId      String
+  path        LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  lessonId    String       @unique
+  lesson      Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  status      String       @default("in_progress")
+  latestScore Int?
+  completedAt DateTime?
+}
+
+model QuizAttempt {
+  id        String   @id @default(cuid())
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  score     Int
+  answers   String
+  createdAt DateTime @default(now())
+}
