@@ -4,6 +4,11 @@ import type { NextConfig } from "next";
 const config: NextConfig = {
   poweredByHeader: false,
   experimental: { cpus: 2 },
+  // Prisma's client engine loads its WASM compiler dynamically. Next's
+  // dependency tracer does not discover that binary from the JS loader.
+  outputFileTracingIncludes: {
+    "/api/*": ["./node_modules/.prisma/client/query_compiler_bg.wasm"],
+  },
   serverExternalPackages: ["pdf-parse", "@prisma/client", "@prisma/adapter-libsql", "@libsql/client", "bcryptjs", "nodemailer"],
   env: {
     NEXT_PUBLIC_NARRATION_MODE: process.env.NARRATION_URL ? "neural" : "device",
